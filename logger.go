@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func main() {
+func logger() {
 	path := flag.String("path", "myapp.log", "Path to the log to analyze.")
 	level := flag.String("level", "ERROR", "Log level to search for. Either ERROR or WARNING.")
 

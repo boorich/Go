@@ -1,11 +1,6 @@
 package main // so this can be executed from the cli
 
-import (
-	"encoding/json"
-	"log"
-	"net/http"
-)
-
+/*
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { // any request to this service is using this handler, return is a (anonymous) function
 		names := r.URL.Query()["name"] // return map of data with all query params the app accepted and retun anything matching "name"
@@ -26,3 +21,4 @@ func main() {
 	}
 
 }
+*/
