@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-)
-
+/**
 func main() {
 	var i int // i available outside for-loop
 	for i < 5 {
@@ -52,5 +49,5 @@ func main() {
 		// panic("Doom and decay came upon us ...")			   // Code panicks here
 		fmt.Println(v) // index can now safely be left out without compiler error
 	}
-
 }
+**/
