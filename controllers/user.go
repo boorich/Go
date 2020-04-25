@@ -19,19 +19,21 @@ func (uc userController) ServeHTTP(w http.ResponseWriter, r *http.Request) { //b
 		switch r.Method { // what's the method on the incoming request?
 		case http.MethodGet: // in case of a GET request
 			uc.getAll(w, r) // pass it on to this function
-		case http.MethodPost: // in case of a POST request
-			uc.post(w, r) // pass it on to this function
-		default:
-			w.WriteHeader(http.StatusNotImplemented) // in case none of the above verbs is used for a request
+		case http.MethodPost:
+			uc.post(w, r)
+		default: // in case none of the above verbs is used for a request
+			w.WriteHeader(http.StatusNotImplemented)
 		}
 	} else {
 		matches := uc.userIDPattern.FindStringSubmatch(r.URL.Path) // compiles a slice of all matching expressions as defined in the user controller like so userIDPattern: regexp.MustCompile(`^/users/(/d+)/?`)
 		if len(matches) == 0 {
 			w.WriteHeader(http.StatusNotFound)
+			return
 		}
 		id, err := strconv.Atoi(matches[1]) // make this an int
-		if err == nil {
+		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
+			return
 		}
 		switch r.Method {
 		case http.MethodGet:
@@ -41,7 +43,7 @@ func (uc userController) ServeHTTP(w http.ResponseWriter, r *http.Request) { //b
 		case http.MethodDelete:
 			uc.delete(id, w)
 		default:
-			w.WriteHeader(http.StatusNotFound)
+			w.WriteHeader(http.StatusNotImplemented)
 		}
 	}
 }
@@ -88,7 +90,7 @@ func (uc *userController) put(id int, w http.ResponseWriter, r *http.Request) {
 	}
 	if id != u.ID {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("ID of user must match ID in URL"))
+		w.Write([]byte("ID of submitted user must match ID in URL"))
 		return
 	}
 	u, err = models.UpdateUser(u)
@@ -102,7 +104,7 @@ func (uc *userController) put(id int, w http.ResponseWriter, r *http.Request) {
 
 // delete a user
 func (uc *userController) delete(id int, w http.ResponseWriter) {
-	err := models.RemoveUserByID(id)
+	err := models.RemoveUserById(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -125,6 +127,6 @@ func (uc *userController) parseRequest(r *http.Request) (models.User, error) {
 // Contructor Function
 func newUserController() *userController { // return pointer to userController object.
 	return &userController{ // the userController variable is created on the fly
-		userIDPattern: regexp.MustCompile(`^/users/(/d+)/?`), //if that Regex works, we have a user
+		userIDPattern: regexp.MustCompile(`^/users/(\d+)/?`), //if that Regex works, we have a user
 	}
 }
